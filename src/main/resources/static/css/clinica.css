@@ -1,0 +1,103 @@
+body {
+  margin: 0;
+  color: #25332f;
+  background: #f3f6f4;
+  font: 15px Arial, sans-serif;
+}
+
+header {
+  padding: 18px max(20px, calc((100% - 1080px) / 2));
+  color: white;
+  background: #286254;
+}
+
+header strong,
+header a {
+  color: white;
+  font-family: Georgia, serif;
+  font-size: 21px;
+  font-weight: normal;
+}
+
+header a { text-decoration: none; }
+
+main {
+  max-width: 1080px;
+  margin: 34px auto;
+  padding: 0 20px;
+}
+
+h1, h2 {
+  margin-top: 0;
+  font-family: Georgia, serif;
+  font-weight: normal;
+}
+
+h1 { margin-bottom: 6px; font-size: 32px; }
+h2 { margin-bottom: 18px; font-size: 21px; }
+.subtitle { margin: 0 0 24px; color: #67766f; }
+.layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 30px; }
+
+section {
+  padding: 22px;
+  background: white;
+  border: 1px solid #dce5df;
+  border-radius: 5px;
+}
+
+label {
+  display: block;
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+input, select {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  margin-bottom: 14px;
+  padding: 8px 10px;
+  border: 1px solid #cbd7d0;
+  border-radius: 4px;
+  background: white;
+}
+
+button {
+  width: 100%;
+  min-height: 42px;
+  border: 0;
+  border-radius: 4px;
+  color: white;
+  background: #286254;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover { background: #1c4e42; }
+.message { margin: 0 0 16px; color: #236148; }
+.error { color: #a43b32; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th, td { padding: 12px 10px; border-bottom: 1px solid #e3e9e5; }
+th { color: #68766f; font-size: 12px; text-transform: uppercase; }
+.risk { font-weight: bold; }
+.risk-Alto { color: #a43b32; }
+.risk-Medio { color: #946b16; }
+.risk-Bajo { color: #286254; }
+.empty { padding: 24px 10px; color: #68766f; text-align: center; }
+.back { display: inline-block; margin-top: 20px; color: #286254; }
+
+.recovery header { padding-right: max(20px, calc((100% - 600px) / 2)); padding-left: max(20px, calc((100% - 600px) / 2)); }
+.recovery main { max-width: 600px; margin-top: 42px; }
+.recovery section { padding: 24px; }
+.recovery h1 { margin-bottom: 8px; font-size: 28px; }
+.recovery p { color: #67766f; line-height: 1.5; }
+.recovery label { margin-top: 20px; }
+.recovery input { height: 42px; }
+.recovery button { margin-top: 16px; }
+
+@media (max-width: 720px) {
+  main { margin-top: 24px; }
+  .layout { grid-template-columns: 1fr; gap: 18px; }
+}

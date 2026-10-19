@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clínica | Recuperar contraseña</title>
+  <link rel="stylesheet" th:href="@{/css/clinica.css}">
+</head>
+
+<body class="recovery">
+  <header><a th:href="@{/}">Clínica</a></header>
+  <main>
+    <section>
+      <h1>Recuperar contraseña</h1>
+      <p>Escribe el correo asociado a tu cuenta.</p>
+      <p class="message" th:if="${mensaje}" th:text="${mensaje}"></p>
+      <p class="error" th:if="${error}" th:text="${error}"></p>
+
+      <form th:action="@{/recuperar}" method="post">
+        <label for="correo">Correo electrónico</label>
+        <input id="correo" name="correo" type="email" maxlength="100" required>
+        <button type="submit">Solicitar recuperación</button>
+      </form>
+      
+      <a class="back" th:href="@{/}">Volver a pacientes</a>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clínica | Pacientes</title>
+  <link rel="stylesheet" th:href="@{/css/clinica.css}">
+</head>
+
+<body>
+  <header><strong>Clínica</strong></header>
+  <main>
+    <h1>Pacientes</h1>
+    <p class="subtitle">Registro y clasificación básica de riesgo.</p>
+    <p><a th:href="@{/recuperar}">Recuperar contraseña</a></p>
+
+    <p class="message" th:if="${mensaje}" th:text="${mensaje}"></p>
+    <p class="message error" th:if="${error}" th:text="${error}"></p>
+
+    <div class="layout">
+      <section>
+        <h2>Nuevo paciente</h2>
+        <form th:action="@{/pacientes}" method="post">
+          <label for="documento">Documento</label>
+          <input id="documento" name="documento" maxlength="11" required>
+
+          <label for="nombreCompleto">Nombre completo</label>
+          <input id="nombreCompleto" name="nombreCompleto" maxlength="100" required>
+
+          <label for="telefono">Teléfono</label>
+          <input id="telefono" name="telefono" type="tel" maxlength="15" required>
+
+          <label for="nivelRiesgo">Nivel de riesgo</label>
+          <select id="nivelRiesgo" name="nivelRiesgo" required>
+            <option th:each="nivel : ${nivelesRiesgo}" th:value="${nivel}" th:text="${nivel}"></option>
+          </select>
+
+          <button type="submit">Registrar paciente</button>
+        </form>
+      </section>
+
+      <section>
+        <h2>Directorio</h2>
+        <div class="table-wrap" th:if="${!#lists.isEmpty(pacientes)}">
+          <table>
+            <thead><tr><th>Documento</th><th>Nombre</th><th>Teléfono</th><th>Riesgo</th></tr></thead>
+
+            <tbody>
+              <tr th:each="paciente : ${pacientes}">
+                <td th:text="${paciente.documento}"></td>
+                <td th:text="${paciente.nombreCompleto}"></td>
+                <td th:text="${paciente.telefono}"></td>
+                <td><span class="risk" th:classappend="' risk-' + ${paciente.nivelRiesgo}" th:text="${paciente.nivelRiesgo}"></span></td>
+              </tr>
+            </tbody>
+            
+          </table>
+        </div>
+        <p class="empty" th:if="${#lists.isEmpty(pacientes)}">Aún no hay pacientes registrados.</p>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
