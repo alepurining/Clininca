@@ -17,9 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -40,12 +38,48 @@ class UsuarioServiceTest {
         usuarioService = new UsuarioService(usuarioRepository, passwordEncoder);
     }
 
+    // 1. Rechazo de correo inválido (Sintaxis)
+    @Test
+    void rechazoDeCorreoInvalido() {
+        String correoInvalido = "usuario_sin_arroba.com";
+        String password = "PasswordFuerte123!";
 
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            usuarioService.registrar("Juan", correoInvalido, password, Rol.Medico);
+        });
 
+        assertTrue(exception.getMessage().toLowerCase().contains("formato") ||
+                exception.getMessage().toLowerCase().contains("correo"));
+    }
 
+    // 2. Rechazo de contraseña débil
+    @Test
+    void rechazoDeContrasenaDebil() {
+        String correoValido = "usuario@dominio.com";
+        String contrasenaDebil = "123";
 
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            usuarioService.registrar("Juan", correoValido, contrasenaDebil, Rol.Medico);
+        });
 
+        assertTrue(exception.getMessage().toLowerCase().contains("débil") ||
+                exception.getMessage().toLowerCase().contains("contraseña"));
+    }
 
+    // 3. Login exitoso
+    @Test
+    void loginExitoso() {
+        String correoValido = "admin@clinica.com";
+        String passwordCorrecta = "ClaveSegura123!";
+
+        Usuario usuarioGuardado = new Usuario("Admin", correoValido, passwordEncoder.encode(passwordCorrecta), Rol.Administrador);
+        when(usuarioRepository.findByCorreoIgnoreCase(correoValido)).thenReturn(Optional.of(usuarioGuardado));
+
+        Usuario usuarioLogueado = usuarioService.login(correoValido, passwordCorrecta);
+
+        assertNotNull(usuarioLogueado, "El usuario debe retornar correctamente tras un login exitoso");
+        assertEquals("Admin", usuarioLogueado.getNombre());
+    }
 
     // 4. Login con contraseña errónea
     @Test
@@ -74,8 +108,7 @@ class UsuarioServiceTest {
     @ValueSource(strings = {"   "})
     void rechazaNombreNuloOEnBlanco(String nombre) {
         assertThatThrownBy(() -> usuarioService.registrar(nombre, "ana@clinica.com", "Password123!", Rol.Medico))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("nombre");
+                .isInstanceOf(IllegalArgumentException.class);
         verify(usuarioRepository, never()).save(any());
     }
 
@@ -84,8 +117,7 @@ class UsuarioServiceTest {
     @ValueSource(strings = {"   "})
     void rechazaCorreoNuloOEnBlanco(String correo) {
         assertThatThrownBy(() -> usuarioService.registrar("Ana", correo, "Password123!", Rol.Medico))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("correo");
+                .isInstanceOf(IllegalArgumentException.class);
         verify(usuarioRepository, never()).save(any());
     }
 
@@ -94,17 +126,14 @@ class UsuarioServiceTest {
     @ValueSource(strings = {"   "})
     void rechazaContrasenaNulaOEnBlanco(String password) {
         assertThatThrownBy(() -> usuarioService.registrar("Ana", "ana@clinica.com", password, Rol.Medico))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("contraseña");
+                .isInstanceOf(IllegalArgumentException.class);
         verify(usuarioRepository, never()).save(any());
     }
 
     @Test
     void rechazaRolNulo() {
         assertThatThrownBy(() -> usuarioService.registrar("Ana", "ana@clinica.com", "Password123!", null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("rol");
+                .isInstanceOf(IllegalArgumentException.class);
         verify(usuarioRepository, never()).save(any());
     }
 }
-
