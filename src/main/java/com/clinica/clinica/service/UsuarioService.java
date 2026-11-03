@@ -22,6 +22,15 @@ public class UsuarioService {
 
     @Transactional
     public Usuario registrar(String nombre, String correo, String password, Rol rol) { //Se utiliza para indicar que este método se ejecutará dentro de una transacción, lo que significa que si ocurre algún error durante la ejecución del método, todos los cambios realizados en la base de datos se revertirán automáticamente. Esto garantiza la consistencia de los datos y evita que queden registros incompletos o inconsistentes en caso de errores.
+
+        // NUEVO: validación de campos obligatorios (ninguno puede ser nulo o estar en blanco)
+        validarObligatorio(nombre, "El nombre es obligatorio.");
+        validarObligatorio(correo, "El correo es obligatorio.");
+        validarObligatorio(password, "La contraseña es obligatoria.");
+        if (rol == null) {
+            throw new IllegalArgumentException("El rol es obligatorio.");
+        }
+
         String correoNormalizado = normalizarCorreo(correo);
 
         if (usuarioRepository.existsByCorreoIgnoreCase(correoNormalizado)) {
@@ -38,6 +47,19 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+    // NUEVO: login. Si el correo no existe o la contraseña no coincide con el hash guardado, lanza excepción.
+    @Transactional(readOnly = true)
+    public Usuario login(String correo, String password) {
+        Usuario usuario = usuarioRepository.findByCorreoIgnoreCase(normalizarCorreo(correo))
+                .orElseThrow(() -> new IllegalArgumentException("Credenciales inválidas."));
+
+        if (!passwordEncoder.matches(password, usuario.getContrasena())) {
+            throw new IllegalArgumentException("Credenciales inválidas.");
+        }
+
+        return usuario;
+    }
+
     @Transactional(readOnly = true)
     public void solicitarRecuperacion(String correo) {
         usuarioRepository.findByCorreoIgnoreCase(normalizarCorreo(correo)); //Se utiliza para indicar que queremos buscar un usuario por su correo, y que queremos que la búsqueda sea insensible a mayúsculas y minúsculas, es decir, que si el correo es "
@@ -46,4 +68,12 @@ public class UsuarioService {
     private String normalizarCorreo(String correo) {
         return correo == null ? "" : correo.trim().toLowerCase(Locale.ROOT); //Se utiliza para indicar que queremos normalizar el correo electrónico, es decir, eliminar los espacios en blanco al inicio y al final, y convertirlo a minúsculas. Esto nos permite evitar problemas de duplicidad de correos electrónicos debido a diferencias en mayúsculas y minúsculas.
     }
+
+    // NUEVO: revisa que un texto no sea nulo ni esté en blanco
+    private void validarObligatorio(String valor, String mensaje) {
+        if (valor == null || valor.isBlank()) {
+            throw new IllegalArgumentException(mensaje);
+        }
+    }
 }
+

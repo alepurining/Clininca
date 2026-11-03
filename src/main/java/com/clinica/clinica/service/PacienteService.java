@@ -28,7 +28,7 @@ public class PacienteService {
         Paciente paciente = new Paciente(
                 documentoLimpio,
                 nombreCompleto.trim(),
-                telefono != null ? telefono.trim() : null, //Se utiliza para indicar que queremos asignar el valor del teléfono al paciente, pero si el teléfono es nulo, queremos asignar null en lugar de una cadena vacía. Esto nos permite evitar posibles errores de NullPointerException al acceder al teléfono antes de asignarle un valor.
+                telefono != null ? telefono.trim() : null, 
                 nivelRiesgo
         );
 

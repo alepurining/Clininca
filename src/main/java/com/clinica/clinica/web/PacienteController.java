@@ -1,4 +1,4 @@
-package com.clinica.clinica.web;
+package com.clinica.clinica.web; //web es el paquete donde se encuentran las clases que manejan las solicitudes HTTP y devuelven las vistas correspondientes.
 
 import com.clinica.clinica.domain.enums.NivelRiesgo;
 import com.clinica.clinica.service.DocumentoDuplicadoException;
